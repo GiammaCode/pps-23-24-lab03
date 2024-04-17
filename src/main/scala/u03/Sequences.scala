@@ -26,40 +26,48 @@ object Sequences: // Essentially, generic linkedlists
       case Nil()                 => Nil()
 
     // Lab 03
+
+    //return for example Cons ((10 ,a), Cons ((20 ,b), Cons ((30 ,c), Nil ())))
     def zip[A, B](first: Sequence[A], second: Sequence[B]): Sequence[(A, B)] =
       first match
         case Nil() => Nil()  
         case Cons(headA, tailA) => second match
           case Nil() => Nil()
           case Cons(headB, tailB) => Cons((headA, headB), zip(tailA, tailB)) 
-        
-      
-    def take[A](l: Sequence[A])(n: Int): Sequence[A] =
-      l match
-        case Nil() => Nil() 
-        case Cons(head, tail) => n match
-          case 0 => Nil()
-          case _ => Cons(head, take(tail)(n-1)) 
-  
     
-    def concat[A](l1: Sequence[A], l2: Sequence[A]): Sequence[A] = 
-      l1 match
-        case Nil() => l2
-        case Cons(head, tail) => l2 match
-          case Nil() => l1
-          case _ => Cons(head, concat(tail, l2))
+    def myZip[A, B] (first: Sequence[A], second: Sequence[B]): Sequence[(A,B)] =
+      (first, second) match
+      case (Nil(), second) => Nil()
+      case (first, Nil()) => Nil()
+      case  (Cons(headA, tailA), Cons(headB, tailB)) => Cons((headA, headB), zip(tailA, tailB))
+    
+    def take[A](l: Sequence[A])(n: Int): Sequence[A] =
+      (l, n) match
+        case (Nil(), n) => Nil() 
+        case (Cons(head, tail), 0) => Nil()
+        case (Cons(head, tail), _ )=> Cons(head, take(tail)(n-1)) 
 
-    def flatMap[A, B](l: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = ???
+    def concat[A](l1: Sequence[A], l2: Sequence[A]): Sequence[A] = 
+      (l1, l2) match 
+        case (Nil(), l2) => l2
+        case (l2, Nil()) => l1 
+        case (Cons(head, tail), l2) => Cons(head, concat(tail, l2))
+      
+    def flatMap[A, B](l: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = 
+      l match
+        case Nil() => Nil()
+        case Cons(head, tail) => ???
+      
 
     def min(l: Sequence[Int]): Optional[Int] = 
-      def minNotOptional(l: Sequence[Int]) : Int = 
+      def myMin(l: Sequence[Int]) : Int = 
         l match
           case Nil() => 10_00_000
-          case Cons(head, tail) => head.min(minNotOptional(tail))
+          case Cons(head, tail) => head.min(myMin(tail))
         
       l match
         case Nil() => Optional.Empty()
-        case Cons(head, tail) => Optional.Just(head.min(minNotOptional(tail)))
+        case Cons(head, tail) => Optional.Just(head.min(myMin(tail)))
       
     
 @main def trySequences =
